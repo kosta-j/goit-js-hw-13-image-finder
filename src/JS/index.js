@@ -6,28 +6,53 @@ import debounce from 'lodash.debounce';
 
 const refs = {
   cardsContainer: document.querySelector('.js-cards'),
-  searchInput: document.querySelector('#search-form input'),
   searchForm: document.querySelector('#search-form'),
+  loadMorebtn: document.querySelector('.js-more-btn'),
 };
 
 const pixabayApiService = new PixabayApiService();
 
-refs.searchInput.addEventListener('input', debounce(onSearchInput, 1000));
+refs.searchForm.addEventListener('submit', onSearchSubmit);
+refs.loadMorebtn.addEventListener('click', onLoadMoreClick);
 
-async function onSearchInput(e) {
-  pixabayApiService.query = e.target.value;
-  // const searchQuery = e.target.value;
-  // console.log(searchQuery);
+async function onSearchSubmit(e) {
+  e.preventDefault();
+  pixabayApiService.resetPageNumber();
+  pixabayApiService.query = e.currentTarget.elements.query.value;
 
   try {
     const queryCards = await pixabayApiService.fetchImages();
+    clearImages();
     render(queryCards.hits);
+    showLoadmoreBtn();
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function onLoadMoreClick() {
+  try {
+    pixabayApiService.incrementPageNumber();
+    const queryCards = await pixabayApiService.fetchImages();
+    render(queryCards.hits);
+    showLoadmoreBtn();
   } catch (e) {
     console.log(e);
   }
 }
 
 function render(cards) {
-  refs.cardsContainer.innerHTML = '';
   refs.cardsContainer.insertAdjacentHTML('beforeend', cardsTpl(cards));
+}
+
+function clearImages() {
+  refs.cardsContainer.innerHTML = '';
+}
+
+function showLoadmoreBtn() {
+  refs.loadMorebtn.style.display = 'flex';
+}
+
+function hideLoadmoreBtn() {
+  refs.loadMorebtn.style.display = 'none';
 }

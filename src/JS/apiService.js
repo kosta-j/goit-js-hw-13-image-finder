@@ -4,16 +4,29 @@ const BASE_URL = 'https://pixabay.com/api/?image_type=photo&orientation=horizont
 export default class PixabayApiService {
   constructor() {
     this.searchQuery = '';
+    this.page = 1;
   }
 
   async fetchImages() {
     const response =
-      await fetch(`${BASE_URL}&q=${this.searchQuery}&page=1&per_page=12&key=${AUTH_KEY}
+      await fetch(`${BASE_URL}&q=${this.searchQuery}&page=${this.page}&per_page=12&key=${AUTH_KEY}
   `);
     return response.json();
   }
 
+  get query() {
+    return this.searchQuery;
+  }
+
   set query(newQuery) {
     this.searchQuery = newQuery;
+  }
+
+  resetPageNumber() {
+    this.page = 1;
+  }
+
+  incrementPageNumber() {
+    this.page += 1;
   }
 }
