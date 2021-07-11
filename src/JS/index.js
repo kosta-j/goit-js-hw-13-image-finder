@@ -2,7 +2,6 @@ import '../sass/main.scss';
 // import fetchedImages from './apiService';
 import PixabayApiService from './apiService';
 import cardsTpl from '../template/cards';
-import debounce from 'lodash.debounce';
 
 const refs = {
   cardsContainer: document.querySelector('.js-cards'),
