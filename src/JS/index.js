@@ -10,6 +10,7 @@ const refs = {
   cardsContainer: document.querySelector('.js-cards'),
   searchForm: document.querySelector('#search-form'),
   loadMorebtn: document.querySelector('.js-more-btn'),
+  scrollAnchor: document.getElementById('js-scroll-anchor'),
 };
 
 const pixabayApiService = new PixabayApiService();
@@ -58,7 +59,7 @@ async function onLoadMoreClick() {
     pixabayApiService.incrementPageNumber();
     const queryCards = await pixabayApiService.fetchImages();
     render(queryCards.hits);
-    showLoadmoreBtn();
+    scrollToView();
   } catch (e) {
     console.log(e);
   }
@@ -74,4 +75,11 @@ function clearImages() {
 
 function showLoadmoreBtn() {
   refs.loadMorebtn.style.display = 'flex';
+}
+
+function scrollToView() {
+  refs.scrollAnchor.scrollIntoView({
+    behavior: 'smooth',
+    block: 'end',
+  });
 }
